@@ -208,6 +208,6 @@ jobs:
             Exit code: ${{ env.TERRAFORM_EXIT_CODE }}
 
             The detailed Terraform log is attached as results.log.
-            to: ${{ secrets.EMAIL_TO }}
-            from: ${{ secrets.EMAIL_USERNAME }}
-            attachments: terraform/results.log
+          to: ${{ secrets.EMAIL_TO }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          attachments: terraform/results.log
