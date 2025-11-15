@@ -149,6 +149,9 @@ jobs:
         if: ${{ github.event.inputs.action == 'destroy' }}
         id: terraform-output-destroy
         run: |
+          set +e
+          terraform destroy -auto-approve | tee -a results.log
+          echo "TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
           echo "log<<EOF" >> $GITHUB_OUTPUT
           cat results.log >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
