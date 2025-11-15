@@ -150,8 +150,8 @@ jobs:
         id: terraform-output-destroy
         run: |
           echo log<<EOF >> $GITHUB_OUTPUT
-        $(cat results.log)
-        EOF
+          $(cat results.log)
+          EOF
 
       - name: Send Terraform results by Email
       # always run even if previous steps fail
