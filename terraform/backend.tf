@@ -13,7 +13,7 @@ terraform {
     }
   }
 
-/* will use terraform cloud rather than using
+  /* will use terraform cloud rather than using
  the normal s3 to store our state file*/
   cloud {}
 }

@@ -1,6 +1,6 @@
-aws-region            = "us-east-1"
-env                   = "dev"
-cidr-block            = "10.0.0.0/16"
+aws-region = "us-east-1"
+env        = "dev"
+cidr-block = "10.0.0.0/16"
 # use count to create the sub net using the count instead of redundency
 pub-subnet-count      = 4
 pub-cidr-block        = ["10.0.0.0/20", "10.0.16.0/20", "10.0.32.0/20", "10.0.64.0/20"]
