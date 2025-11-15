@@ -1,6 +1,6 @@
 
 locals {
-  org     = "aman"
+  org     = "DepiProject"
   project = "netflix-clone"
   env     = var.env
 }

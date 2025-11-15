@@ -172,9 +172,9 @@ jobs:
 
             Output log:
             ---------------------------------------------
-            ${{ steps.terraform_output_plan.outputs.log }}
-            ${{ steps.terraform_output_apply.outputs.log }}
-            ${{ steps.terraform_output_destroy.outputs.log }}
+            ${{ steps.terraform-output-plan.outputs.log }}
+            ${{ steps.terraform-output-apply.outputs.log }}
+            ${{ steps.terraform-output-destroy.outputs.log }}
             ---------------------------------------------
 
           to: ${{ secrets.EMAIL_TO }}
