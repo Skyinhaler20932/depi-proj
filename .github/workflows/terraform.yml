@@ -95,18 +95,75 @@ jobs:
 
       - name: Terraform Plan
         if: ${{ github.event.inputs.action == 'plan' }}
-        run: terraform plan -input=false
+        run: |
+          set +e
+          terraform plan -input=false
+          echo TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
+
+      - name: Set Terraform Plan Output
+        if: ${{ github.event.inputs.action == 'plan' }}
+        id: terraform-output
+        run: |
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          cat plan.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Terraform Apply
         if: ${{ github.event.inputs.action == 'apply' }}
         run: |
-          echo "Running Terraform apply"
-          terraform apply -auto-approve 2>&1 | tee results.log
+          set +e
+          terraform apply -auto-approve | tee results.log
+          echo "TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
+
+      - name: Set Terraform Apply Output
+        if: ${{ github.event.inputs.action == 'apply' }}
+        id: terraform-output
+        run: |
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          cat results.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Terraform destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
         run: |
-          echo "Running Terraform destroy" 
-          terraform destroy -auto-approve 2>&1 | tee results.log
+          set +e
+          terraform destroy -auto-approve | tee results.log
+          echo "TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
 
-      
+      - name: Set Terraform Destroy Output
+        if: ${{ github.event.inputs.action == 'destroy' }}
+        id: terraform-output
+        run: |
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          cat results.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+
+      - name: Send Terraform results by Email
+      # always run even if previous steps fail
+        if: always()  
+        uses: dawidd6/action-send-mail@v3
+        with:
+          # sender creds
+          # make it generic as user provides his creds in secerts
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          subject: "Terraform Workflow Results - ${{ github.workflow }}"
+          body: |
+            Hello,
+
+            Terraform workflow ${{ github.workflow }} has completed.
+
+            Workflow run: ${{ github.run_number }}
+            Repository: ${{ github.repository }}
+            Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Exit code: ${{ env.TERRAFORM_EXIT_CODE }}
+            Attached is the Terraform output log:
+
+            ${{ steps.terraform-output.outputs.log }}
+
+          to: ${{ secrets.EMAIL_TO }}
+          from: ${{ secrets.EMAIL_USERNAME }}
