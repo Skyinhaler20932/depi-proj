@@ -1,0 +1,89 @@
+# will use the github actions to manage the infra on the cloud
+
+
+name: ' Infra Configuring using Terraform on AWS' 
+
+# no triggers only manual push
+on: 
+  workflow_dispatch:
+    inputs:
+      action:
+        type: choice
+        description: 'Terraform Action'
+        # input will be parameterized from drop down menu
+        # like using script and input parameters in the Jenkins
+        options:
+          - plan
+          - apply
+          - destroy
+        required: true
+        default: 'plan'
+
+env:
+  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+  TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
+  TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
+permissions:
+  contents: read
+
+
+jobs:
+  infrastructure-setup-using-terraform:
+    name: Terraform ${{ github.event.input.actions }}
+    runs-on: ubuntu-24.04
+    environment: production
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: Terraform
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setting Up the Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.13.3"
+          terraform_wrapper: true
+          cli_config_credentials_token: ${{ secrets. TF_API_TOKEN }}
+
+      # cache to help us optimizing the runner times on different pushes
+      - name: Cache Terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.terraform.d/plugin-cache
+            .terraform
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+          
+      - name: Initialising the Terraform
+        run: terraform init
+
+      - name: Terraform Format Check
+      # use the -check to fail the pipeline on any issue an d shows the error line in the log
+        run: terraform fmt -check --diff
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        if: ${{ github.event.inputs.action == 'plan' }}
+        run: terraform plan -input=false
+
+      - name: Terraform Apply
+        if: ${{ github.event.inputs.action == 'apply' }}
+        run: |
+          echo "Running Terraform apply"
+          terraform apply -auto-approve 2>&1 | tee results.log
+
+      - name: Terraform destroy
+        if: ${{ github.event.inputs.action == 'destroy' }}
+        run: |
+          echo "Running Terraform destroy" 
+          terraform destroy -auto-approve 2>&1 | tee results.log
+
+      
