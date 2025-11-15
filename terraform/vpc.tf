@@ -30,8 +30,8 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_subnet" "public-subnet" {
-  count                   = var.pub-subnet-count
-  vpc_id                  = aws_vpc.vpc.id
+  count  = var.pub-subnet-count
+  vpc_id = aws_vpc.vpc.id
   # here will use diff cidr block and az for each created 
   cidr_block              = element(var.pub-cidr-block, count.index)
   availability_zone       = element(var.pub-availability-zone, count.index)
@@ -63,7 +63,7 @@ resource "aws_route_table" "public-rt" {
 }
 
 resource "aws_route_table_association" "public-rta" {
-  count          = 4
+  count = 4
   # attach route table using sub net id
   route_table_id = aws_route_table.public-rt.id
   subnet_id      = aws_subnet.public-subnet[count.index].id
