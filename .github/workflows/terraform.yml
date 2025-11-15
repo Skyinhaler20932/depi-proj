@@ -24,13 +24,13 @@ env:
   TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
   TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
 permissions:
-  # contents: read
+    # contents: read
     contents: write
 
 
 jobs:
   infrastructure-setup-using-terraform:
-    name: Terraform ${{ github.event.input.actions }}
+    name: Terraform ${{ github.event.inputs.action }}
     runs-on: ubuntu-24.04
     environment: production
 
@@ -48,7 +48,7 @@ jobs:
         with:
           terraform_version: "1.13.3"
           terraform_wrapper: true
-          cli_config_credentials_token: ${{ secrets. TF_API_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       # cache to help us optimizing the runner times on different pushes
       - name: Cache Terraform
@@ -106,9 +106,9 @@ jobs:
         if: ${{ github.event.inputs.action == 'plan' }}
         id: terraform-output-plan
         run: |
-          echo "log<<EOF" >> $GITHUB_OUTPUT
+          echo log<<EOF >> $GITHUB_OUTPUT
           cat results.log >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo EOF >> $GITHUB_OUTPUT
 
       - name: Terraform Apply
         if: ${{ github.event.inputs.action == 'apply' }}
@@ -121,9 +121,9 @@ jobs:
         if: ${{ github.event.inputs.action == 'apply' }}
         id: terraform-output-apply
         run: |
-          echo "log<<EOF" >> $GITHUB_OUTPUT
+          echo log<<EOF >> $GITHUB_OUTPUT
           cat results.log >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo EOF >> $GITHUB_OUTPUT
 
       - name: Terraform destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
@@ -136,9 +136,9 @@ jobs:
         if: ${{ github.event.inputs.action == 'destroy' }}
         id: terraform-output-destroy
         run: |
-          echo "log<<EOF" >> $GITHUB_OUTPUT
+          echo log<<EOF >> $GITHUB_OUTPUT
           cat results.log >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo EOF >> $GITHUB_OUTPUT
 
 
       - name: Send Terraform results by Email
