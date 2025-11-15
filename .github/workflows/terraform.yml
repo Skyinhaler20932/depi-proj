@@ -156,18 +156,46 @@ jobs:
           cat results.log >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Send Terraform results by Email
+      #- name: Send Terraform results by Email
       # always run even if previous steps fail
-        if: always()  
-        uses: dawidd6/action-send-mail@v3
-        with:
+        #if: always()  
+        #uses: dawidd6/action-send-mail@v3
+        #with:
           # sender creds
           # make it generic as user provides his creds in secerts
+          #server_address: ${{ secrets.SMTP_SERVER }}
+          #server_port: ${{ secrets.SMTP_PORT }}
+          #username: ${{ secrets.EMAIL_USERNAME }}
+          #password: ${{ secrets.EMAIL_PASSWORD }}
+
+          #subject: "Terraform Workflow Results - ${{ github.workflow }}"
+          #body: |
+            #Hello,
+
+           # Terraform workflow ${{ github.workflow }} has completed.
+
+            #Workflow run: ${{ github.run_number }}
+            #Repository: ${{ github.repository }}
+            #Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            #Exit code: ${{ env.TERRAFORM_EXIT_CODE }}
+
+            #Output log:
+            #---------------------------------------------
+            #${{ steps.terraform-output-plan.outputs.log }}
+            #${{ steps.terraform-output-apply.outputs.log }}
+            #${{ steps.terraform-output-destroy.outputs.log }}
+            #---------------------------------------------
+
+          #to: ${{ secrets.EMAIL_TO }}
+          #from: ${{ secrets.EMAIL_USERNAME }}
+      - name: Send Terraform results by Email
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
           server_address: ${{ secrets.SMTP_SERVER }}
           server_port: ${{ secrets.SMTP_PORT }}
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-
           subject: "Terraform Workflow Results - ${{ github.workflow }}"
           body: |
             Hello,
@@ -179,12 +207,7 @@ jobs:
             Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             Exit code: ${{ env.TERRAFORM_EXIT_CODE }}
 
-            Output log:
-            ---------------------------------------------
-            ${{ steps.terraform-output-plan.outputs.log }}
-            ${{ steps.terraform-output-apply.outputs.log }}
-            ${{ steps.terraform-output-destroy.outputs.log }}
-            ---------------------------------------------
-
-          to: ${{ secrets.EMAIL_TO }}
-          from: ${{ secrets.EMAIL_USERNAME }}
+            The detailed Terraform log is attached as results.log.
+            to: ${{ secrets.EMAIL_TO }}
+            from: ${{ secrets.EMAIL_USERNAME }}
+            attachments: terraform/results.log
