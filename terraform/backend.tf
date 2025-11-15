@@ -1,5 +1,6 @@
 terraform {
   required_version = "~> 1.13.3"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -7,7 +8,7 @@ terraform {
     }
   }
 
-    cloud {
+  cloud {
     organization = "DepiProjectDevOps"
 
     workspaces {
@@ -16,7 +17,7 @@ terraform {
   }
 }
 
-}
 provider "aws" {
-  region = var.aws-region
+  region = var.aws_region
 }
+
