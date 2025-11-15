@@ -7,7 +7,15 @@ terraform {
     }
   }
 
-  cloud {}
+    cloud {
+    organization = "DepiProjectDevOps"
+
+    workspaces {
+      name = "netflix-clone-project"
+    }
+  }
+}
+
 }
 provider "aws" {
   region = var.aws-region
