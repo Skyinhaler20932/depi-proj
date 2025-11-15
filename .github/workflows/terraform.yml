@@ -102,7 +102,7 @@ jobs:
 
       - name: Set Terraform Plan Output
         if: ${{ github.event.inputs.action == 'plan' }}
-        id: terraform-output
+        id: terraform-output-plan
         run: |
           echo "log<<EOF" >> $GITHUB_OUTPUT
           cat plan.log >> $GITHUB_OUTPUT
@@ -117,7 +117,7 @@ jobs:
 
       - name: Set Terraform Apply Output
         if: ${{ github.event.inputs.action == 'apply' }}
-        id: terraform-output
+        id: terraform-output-apply
         run: |
           echo "log<<EOF" >> $GITHUB_OUTPUT
           cat results.log >> $GITHUB_OUTPUT
@@ -132,7 +132,7 @@ jobs:
 
       - name: Set Terraform Destroy Output
         if: ${{ github.event.inputs.action == 'destroy' }}
-        id: terraform-output
+        id: terraform-output-destroy
         run: |
           echo "log<<EOF" >> $GITHUB_OUTPUT
           cat results.log >> $GITHUB_OUTPUT
