@@ -98,7 +98,8 @@ jobs:
         run: |
           set +e
           terraform plan -input=false
-          echo TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
+          #QUOTES MISSING ""
+          echo "TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
 
       - name: Set Terraform Plan Output
         if: ${{ github.event.inputs.action == 'plan' }}
@@ -161,11 +162,13 @@ jobs:
             Repository: ${{ github.repository }}
             Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             Exit code: ${{ env.TERRAFORM_EXIT_CODE }}
-            Attached is the Terraform output log:
-            '''
 
-            ${{ steps.terraform-output.outputs.log }}
-            '''
+            Output log:
+            ---------------------------------------------
+            ${{ steps.terraform_output_plan.outputs.log }}
+            ${{ steps.terraform_output_apply.outputs.log }}
+            ${{ steps.terraform_output_destroy.outputs.log }}
+            ---------------------------------------------
 
           to: ${{ secrets.EMAIL_TO }}
           from: ${{ secrets.EMAIL_USERNAME }}
