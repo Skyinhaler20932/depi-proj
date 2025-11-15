@@ -1,5 +1,6 @@
+
 locals {
-  org     = "youssef"
+  org     = "aman"
   project = "netflix-clone"
   env     = var.env
 }
@@ -16,8 +17,6 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-# required gateway after runnig the vpc
-#but still to ensure reliability we defined it explicitly
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
@@ -30,9 +29,8 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_subnet" "public-subnet" {
-  count  = var.pub-subnet-count
-  vpc_id = aws_vpc.vpc.id
-  # here will use diff cidr block and az for each created 
+  count                   = var.pub-subnet-count
+  vpc_id                  = aws_vpc.vpc.id
   cidr_block              = element(var.pub-cidr-block, count.index)
   availability_zone       = element(var.pub-availability-zone, count.index)
   map_public_ip_on_launch = true
@@ -63,8 +61,7 @@ resource "aws_route_table" "public-rt" {
 }
 
 resource "aws_route_table_association" "public-rta" {
-  count = 4
-  # attach route table using sub net id
+  count          = 4
   route_table_id = aws_route_table.public-rt.id
   subnet_id      = aws_subnet.public-subnet[count.index].id
 

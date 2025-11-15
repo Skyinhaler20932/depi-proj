@@ -1,4 +1,3 @@
-# to gather the latest version of the OS, instead of changing it each time in the main.tf 
 data "aws_ami" "ubuntu" {
   most_recent = true
 
