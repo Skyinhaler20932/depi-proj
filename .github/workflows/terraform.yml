@@ -24,7 +24,8 @@ env:
   TF_WORKSPACE: ${{ secrets.TF_WORKSPACE }}
   TF_CLOUD_ORGANIZATION: ${{ secrets.TF_CLOUD_ORGANIZATION }}
 permissions:
-  contents: read
+  # contents: read
+    contents: write
 
 
 jobs:
@@ -64,9 +65,27 @@ jobs:
         run: terraform init
 
       - name: Terraform Format Check
+        id : fmtcheck
+        continue-on-error: true
       # use the -check to fail the pipeline on any issue an d shows the error line in the log
-        run: terraform fmt -check --diff
+        run: terraform fmt -check -recursive --diff
 
+      - name: Auto Fix Formatting
+        if: steps.fmtcheck.outcome == 'failure'
+        run: |
+          echo "Formatting issues found — applying recursive fix"
+          terraform fmt -recursive
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          # Commit only if there are changes
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-format Terraform files (CI)"
+            git push
+          else
+            echo "No formatting changes to commit."
+          fi
+          
       - name: Terraform Validate
         run: terraform validate
 
