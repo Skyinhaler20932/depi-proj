@@ -77,7 +77,8 @@ jobs:
           terraform fmt -recursive
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add .
+          git add "*.tf"
+          git add "*.tfvars" || true
           # Commit only if there are changes
           if ! git diff --cached --quiet; then
             git commit -m "Auto-format Terraform files (CI)"
@@ -85,7 +86,7 @@ jobs:
           else
             echo "No formatting changes to commit."
           fi
-          
+
       - name: Terraform Validate
         run: terraform validate
 
