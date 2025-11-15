@@ -149,9 +149,9 @@ jobs:
         if: ${{ github.event.inputs.action == 'destroy' }}
         id: terraform-output-destroy
         run: |
-          echo log<<EOF >> $GITHUB_OUTPUT
-          $(cat results.log)
-          EOF
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          cat results.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Send Terraform results by Email
       # always run even if previous steps fail
