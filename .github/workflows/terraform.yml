@@ -100,45 +100,45 @@ jobs:
           # log input file was missing
           terraform plan -input=false | tee -a results.log
           #QUOTES MISSING ""
-          echo "TERRAFORM_EXIT_CODE=$?" >> "$GITHUB_ENV"
+          echo "TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
 
       - name: Set Terraform Plan Output
         if: ${{ github.event.inputs.action == 'plan' }}
         id: terraform-output-plan
         run: |
-          echo "log<<EOF\n" >> "$GITHUB_OUTPUT"
-          cat plan.log >> "$GITHUB_OUTPUT"
-          echo "\nEOF\n" >> "$GITHUB_OUTPUT"
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          cat plan.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Terraform Apply
         if: ${{ github.event.inputs.action == 'apply' }}
         run: |
           set +e
           terraform apply -auto-approve | tee -a results.log
-          echo "TERRAFORM_EXIT_CODE=$?" >> "$GITHUB_ENV"
+          echo "TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
 
       - name: Set Terraform Apply Output
         if: ${{ github.event.inputs.action == 'apply' }}
         id: terraform-output-apply
         run: |
-          echo "log<<EOF\n" >> "$GITHUB_OUTPUT"
-          cat results.log >> "$GITHUB_OUTPUT"
-          echo "\nEOF\n" >> "$GITHUB_OUTPUT"
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          cat results.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Terraform destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
         run: |
           set +e
           terraform destroy -auto-approve | tee -a results.log
-          echo "TERRAFORM_EXIT_CODE=$?" >> "$GITHUB_ENV"
+          echo "TERRAFORM_EXIT_CODE=$?" >> $GITHUB_ENV
 
       - name: Set Terraform Destroy Output
         if: ${{ github.event.inputs.action == 'destroy' }}
         id: terraform-output-destroy
         run: |
-          echo "log<<EOF\n" >> "$GITHUB_OUTPUT"
-          cat results.log >> "$GITHUB_OUTPUT"
-          echo "\nEOF\n" >> "$GITHUB_OUTPUT"
+          echo "log<<EOF" >> $GITHUB_OUTPUT
+          cat results.log >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
 
       - name: Send Terraform results by Email
