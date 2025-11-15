@@ -107,7 +107,7 @@ jobs:
         id: terraform-output-plan
         run: |
           echo "log<<EOF" >> $GITHUB_OUTPUT
-          cat plan.log >> $GITHUB_OUTPUT
+          cat results.log >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Terraform Apply
