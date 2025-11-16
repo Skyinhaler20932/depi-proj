@@ -15,11 +15,11 @@ echo "Detected OS: $OS"
 case "$OS" in
     amzn|rhel|centos)
         echo "Running yum update..."
-        sudo yum update -y
+        sudo yum update -q -y
         ;;
     ubuntu|debian)
         echo "Running apt update..."
-        sudo apt update -y
+        sudo apt update -qq -y
         ;;
     *)
         echo "Unsupported OS: $OS. Skipping update."
