@@ -7,9 +7,10 @@ if ! command -v pip3 &>/dev/null; then
     exit 1
 fi
 
-echo "➡ Installing Ansible using pip3..."
-pip3 install --upgrade pip
-pip3 install ansible
+# echo "Installing Ansible using pip3..."
+# pip3 install --upgrade pip
+# pip3 install ansible
+sudo apt-get install -y ansible
 
 echo "Ansible installation complete!"
 ansible --version
