@@ -1,0 +1,109 @@
+---
+- name: Generic Jenkins Install & Control
+  hosts: jenkins_server
+  become: true
+  gather_facts: true
+
+  vars:
+    # Repo
+    jenkins_key_debian: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    jenkins_key_redhat: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+    # Repo URLs
+    jenkins_repo_debian: "deb https://pkg.jenkins.io/debian-stable binary/"
+    jenkins_repo_redhat: "https://pkg.jenkins.io/redhat-stable/"
+
+    # Java package names per OS family
+    java_packages:
+      Debian: openjdk-17-jdk
+      RedHat: java-17-openjdk
+
+  tasks:
+
+    - name: Show detected OS
+      debug:
+        msg: "Detected: {{ ansible_distribution }} ({{ ansible_os_family }})"
+      tags: [always]
+
+
+    # INSTALLATION (tag: install)
+
+    - name: Install Java
+      package:
+        name: "{{ java_packages[ansible_os_family] }}"
+        state: present
+      tags: [install]
+
+    # Debian install
+    - name: Add Jenkins GPG key (Debian)
+      apt_key:
+        url: "{{ jenkins_key_debian }}"
+        state: present
+      when: ansible_os_family == "Debian"
+      tags: [install]
+
+    - name: Add Jenkins repository (Debian)
+      apt_repository:
+        repo: "{{ jenkins_repo_debian }}"
+        state: present
+      when: ansible_os_family == "Debian"
+      tags: [install]
+
+    - name: Install Jenkins (Debian)
+      apt:
+        name: jenkins
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+      tags: [install]
+
+    # RedHat install
+    - name: Add Jenkins repo key (RedHat)
+      rpm_key:
+        state: present
+        key: "{{ jenkins_key_redhat }}"
+      when: ansible_os_family == "RedHat"
+      tags: [install]
+
+    - name: Add Jenkins repository (RedHat)
+      yum_repository:
+        name: jenkins
+        description: Jenkins Stable Repo
+        baseurl: "{{ jenkins_repo_redhat }}"
+        gpgcheck: yes
+        gpgkey: "{{ jenkins_key_redhat }}"
+      when: ansible_os_family == "RedHat"
+      tags: [install]
+
+    - name: Install Jenkins (RedHat)
+      package:
+        name: jenkins
+        state: present
+      when: ansible_os_family == "RedHat"
+      tags: [install]
+
+    # SERVICE ACTIONS (tag: start, stop, restart)
+
+    - name: Start Jenkins
+      systemd:
+        name: jenkins
+        state: started
+        enabled: yes
+      tags: [start]
+
+    - name: Stop Jenkins
+      systemd:
+        name: jenkins
+        state: stopped
+      tags: [stop]
+
+    - name: Restart Jenkins
+      systemd:
+        name: jenkins
+        state: restarted
+      tags: [restart]
+
+    - name: Show initial admin password
+      debug:
+        msg: "Initial password: /var/lib/jenkins/secrets/initialAdminPassword"
+      tags: [install]
