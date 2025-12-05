@@ -3,7 +3,8 @@ locals {
     "jenkins-server",
     "monitoring-server",
     "kubernetes-master-node",
-    "kubernetes-worker-node"
+    "kubernetes-worker-node",
+    "ansible-node"
   ]
 }
 
