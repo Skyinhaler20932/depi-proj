@@ -78,15 +78,6 @@ This project simulates a real enterprise-grade setup where a **React-based Netfl
 
 
 
-| Part | Title | Description |
-|------|--------|-------------|
-| 🧩 **Part 1** | *Terraform + GitHub Actions + AWS Setup* | Infrastructure setup & automation |
-| ⚙️ **Part 2** | *Jenkins, Docker, SonarQube, Trivy Setup* | Core CI/CD pipeline foundations |
-| 🧠 **Part 3** | *SonarQube + Trivy + TMDB + Pipeline Run* | Running secure pipelines |
-| ☸️ **Part 4** | *Kubernetes Cluster Setup + Deployment* | Full app deployment in K8s |
-| 📊 **Part 5** | *Monitoring Setup* | End-to-end observability |
-
----
 
 
 
