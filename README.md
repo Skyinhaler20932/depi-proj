@@ -1,11 +1,6 @@
 ![Uploading 1_50Xa4Lct9GaJBhUsuN337g.gif…]()
 # 🎬 Netflix Clone - DevSecOps Project
-[![LinkedIn](https://img.shields.io/badge/Connect%20with%20me%20on-LinkedIn-blue.svg)](https://www.linkedin.com/in/aman-devops/)
-[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/jdzF8kTtw2)
-[![Medium](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)](https://medium.com/@amanpathakdevops)
-[![GitHub](https://img.shields.io/github/stars/AmanPathak-DevOps.svg?style=social)](https://github.com/AmanPathak-DevOps)
-[![AWS](https://img.shields.io/badge/AWS-%F0%9F%9B%A1-orange)](https://aws.amazon.com)
-[![Terraform](https://img.shields.io/badge/Terraform-%E2%9C%A8-lightgrey)](https://www.terraform.io)
+
 
 ![Architecture Diagram](assets/arch-diag.gif)
 
@@ -80,9 +75,8 @@ This project simulates a real enterprise-grade setup where a **React-based Netfl
 
 ---
 
-## 📽️ How to do this Project?
 
-> This project is documented through a **5-Part YouTube Series**, each building upon the previous one.
+
 
 | Part | Title | Description |
 |------|--------|-------------|
