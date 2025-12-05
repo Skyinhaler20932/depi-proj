@@ -1,0 +1,45 @@
+- name: Install Trivy dependencies
+  apt:
+    name:
+      - wget
+      - gnupg
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Add Trivy GPG key
+  shell: |
+    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key \
+    | gpg --dearmor \
+    | tee /usr/share/keyrings/trivy.gpg > /dev/null
+  args:
+    warn: false
+  when: ansible_os_family == "Debian"
+
+- name: Add Trivy repository
+  copy:
+    dest: /etc/apt/sources.list.d/trivy.list
+    content: |
+      deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main
+  when: ansible_os_family == "Debian"
+
+- name: Update apt cache for Trivy
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install Trivy
+  apt:
+    name: trivy
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Check Trivy version
+  command: trivy --version
+  register: trivy_output
+  changed_when: false
+  when: ansible_os_family == "Debian"
+
+- name: Display Trivy version
+  debug:
+    msg: "{{ trivy_output.stdout }}"
+  when: ansible_os_family == "Debian"

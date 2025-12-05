@@ -1,0 +1,70 @@
+- name: Install Docker depending on OS family
+  hosts: all
+  become: yes
+
+  tasks:
+
+
+    - name: Update apt cache (Debian family)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Install docker.io (Debian/Ubuntu)
+      apt:
+        name: docker.io
+        state: present
+      when: ansible_os_family == "Debian"
+
+
+    - name: Install dependencies (RHEL family)
+      yum:
+        name:
+          - yum-utils
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Add Docker official repo (RHEL family)
+      command: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      args:
+        creates: /etc/yum.repos.d/docker-ce.repo
+      when: ansible_os_family == "RedHat"
+
+    - name: Install Docker Engine (RHEL family)
+      yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+      when: ansible_os_family == "RedHat"
+
+
+    - name: Ensure jenkins user exists
+      user:
+        name: jenkins
+        state: present
+        shell: /bin/bash
+
+    - name: Add jenkins to docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+
+    - name: Add ubuntu to docker group (if exists)
+      shell: |
+        id -u ubuntu >/dev/null 2>&1 && usermod -aG docker ubuntu || true
+      args:
+        warn: false
+
+    - name: Restart docker service
+      systemd:
+        name: docker
+        enabled: yes
+        state: restarted
+
+    - name: Set permissions on docker.sock
+      file:
+        path: /var/run/docker.sock
+        mode: "0777"
